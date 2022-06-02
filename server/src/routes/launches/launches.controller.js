@@ -1,8 +1,34 @@
-const launches = require('../../model/launches.model')
+const {
+    getAllLaunches, 
+    addNewLaunch 
+} = require('../../model/launches.model')
 
 
-function httpgetAllLaunches(req, res){
-    return res.status(200).json(launches.getAllLaunches())
+function httpGetAllLaunches(req, res){
+    return res.status(200).json(getAllLaunches())
 }
 
-module.exports = httpgetAllLaunches
+function httpAddNewLaunch(req, res){
+    const launch = req.body
+
+    if(!launch.mission || !launch.rocket || !launch.launchDate || !launch.destination){
+        return res.status(400).json({
+            error: "Missing required launch data" 
+        })
+    }
+
+    launch.launchDate = new Date(launch.launchDate)
+    if(isNaN(launch.launchDate)){
+        return res.status(400).json({
+            error: "Invalid launch Date"
+        })
+    }
+
+    addNewLaunch(launch)
+    return res.status(201).json(launch)
+}
+
+module.exports = {
+    httpGetAllLaunches,
+    httpAddNewLaunch,
+}
