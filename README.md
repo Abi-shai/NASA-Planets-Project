@@ -1,6 +1,6 @@
 # About
 
-A fun project made while learning Node.js and back-end development.This is about using informations from a NASA database, about planets from multiples solar system, and using those to search for habitable planets based on scientifics criterias.
+A fun project made while learning Node.js and back-end development.This is about using informations from a NASA database, about planets from multiple solar systems, and using those to search for habitable planets based on scientifics criterias.
 
 ## Libraries
 
