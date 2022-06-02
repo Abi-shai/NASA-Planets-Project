@@ -4,4 +4,4 @@ A fun project made while learning Node.js and back-end development.This is about
 
 ## Libraries
 
-The front end was created using React [Create React App](https://github.com/facebook/create-react-app), and the design system and concept is from the library [Arwes](https://github.com/arwes/arwes).
+The front end was created using React, [Create React App](https://github.com/facebook/create-react-app), and the design system and concept is from the library [Arwes](https://github.com/arwes/arwes).
