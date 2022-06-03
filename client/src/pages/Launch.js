@@ -35,9 +35,6 @@ const Launch = props => {
         <Button animate 
           show={props.entered} 
           type="submit" 
-          onClick={()=>{
-            planets()
-          }}
           layer="success" 
           disabled={props.isPendingLaunch}>
           Launch Mission ✔

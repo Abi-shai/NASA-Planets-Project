@@ -14,7 +14,7 @@ const isPlanetHabitable = (planet) => {
 // Handles the returning data in rows of the planets data
 function loadPlanetsData(){
     return new Promise((resolve, reject) => {
-        fs.createReadStream(path.join(__dirname, '../', '../', 'data', 'kepler_data.csv'))
+        fs.createReadStream(path.join(__dirname, '../', '../', '/data', 'kepler_data.csv'))
             .pipe(parse({
                 comment: '#',
                 columns: true
@@ -32,6 +32,7 @@ function loadPlanetsData(){
                 console.log(`${habitablePlanet.length} is the number of habitable planets found`)
             })
             resolve()
+            console.log(habitablePlanet)
         })
 }
 
@@ -40,5 +41,6 @@ function getAllPlanets(){
 }
 
 module.exports = {
-    getAllPlanets
+    getAllPlanets,
+    loadPlanetsData
 }
