@@ -4,6 +4,8 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
+    "test": "jest",
+    "test-watch": "jest --watch",
     "start": "node ./src/server.js",
     "watch": "nodemon src/server.js"
   },
@@ -17,6 +19,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "jest": "^28.1.0",
     "nodemon": "^2.0.16"
   }
 }
