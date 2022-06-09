@@ -21,9 +21,12 @@ const launch = {
 saveLaunch(launch)
 
 
-function existLaunchWithId(launchId){
-    return launches.has(launchId)
+async function existLaunchWithId(launchId){
+    return await launches.findOne({
+        flightNumber: launchId
+    })
 }
+
 
 // Handles returning the latest flight number from the array of launches
 // from the MongoDB Database
@@ -65,11 +68,15 @@ async function scheduleNewLaunch(launch){
 
 
 // Handles aborting a launch that exist on the MongoDB Database
-function abortLaunchById(launchId){
-    const aborted = launches.get(launchId)
-    aborted.upcoming = true
-    aborted.success = false
-    return aborted
+async function abortLaunchById(launchId){
+    const aborted = await launches.updateOne({
+        flightNumber: launchId
+    }, {
+        upcoming: false,
+        success: false
+    })
+
+    return aborted.ok === 1 && aborted.nModified === 1
 }
 
 
@@ -83,6 +90,8 @@ async function saveLaunch(launch) {
         throw new Error('No matching planet was found')
     }
 
+    // The upsert boolean parameter checks if the launch
+    // already exists in the database collection
     await launches.findOneAndUpdate({
         flightNumber: launch.flightNumber 
     }, launch, {
