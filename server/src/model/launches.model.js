@@ -48,16 +48,17 @@ async function getAllLaunches(){
 }
 
 // Handles the creation of a new launch on the MongoDB Database
-function addNewLaunch(lauch){
-    latestFlightNumber++
-    launches.set(
-        latestFlightNumber++,
-        Object.assign(launch, {
-            success: true,
-            upcoming: true,
-            customers: ['Zero to mastery', 'NASA'],
-            flightNumber: latestFlightNumber,
-        }))
+async function scheduleNewLaunch(launch){
+    const newFlightNumber = await getLatestFlightNumber() + 1
+
+    const newLaunch = Object.assign(launch, {
+        success: true,
+        upcoming: true,
+        customers: ['Zero to mastery', 'NASA'],
+        flightNumber: newFlightNumber,
+    })
+
+    await saveLaunch(newLaunch)
 }
 
 
@@ -89,7 +90,7 @@ async function saveLaunch(launch) {
 
 module.exports = {
     getAllLaunches,
-    addNewLaunch,
+    scheduleNewLaunch,
     existLaunchWithId,
     abortLaunchById
 }
