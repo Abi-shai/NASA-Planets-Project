@@ -1,30 +1,53 @@
-// const launches = require('./launches.mongo')
+const launches = require('./launches.mongo')
+const planets = require('./planets.mongo')
 
-const launches = new Map()
+const DEFAULT_FLIGHT_NUMBER = 100
 
 let latestFlightNumber = 100
 
+// Base state of all the proporties that goes with Launches
 const launch = {
     flightNumber: 100,
     mission: 'Kepler Exploration X',
     rocket: 'Explorer IS1',
     launchData: new Date('December 27, 2030'),
-    destination: 'Kepler-442 b',
+    target: 'Kepler-442 b',
     customers: ['ZTM', 'NASA'],
     upcoming: true,
     success: true
 }
 
-launches.set(launch.flightNumber, launch)
+// Handles saving a launch to a MongoDB Database
+saveLaunch(launch)
+
 
 function existLaunchWithId(launchId){
     return launches.has(launchId)
 }
 
-function getAllLaunches(){
-    return Array.from(launches.values())
+// Handles returning the latest flight number from the array of launches
+// from the MongoDB Database
+async function getLatestFlightNumber(){
+    const latestLaunch = await launches
+        .findOne()
+        // Added the minus sign to return the latestLaunch
+        // in descending order
+        .sort(`-flightNumber`)
+
+    if(!latestLaunch) {
+        return DEFAULT_FLIGHT_NUMBER
+    }
+
+    return latestLaunch.flightNumber
 }
 
+// Handles returning all the launches on the MongoDB Database
+async function getAllLaunches(){
+    return await launches
+        .find({}, { '_id': 0, '__v': 0 })
+}
+
+// Handles the creation of a new launch on the MongoDB Database
 function addNewLaunch(lauch){
     latestFlightNumber++
     launches.set(
@@ -37,11 +60,31 @@ function addNewLaunch(lauch){
         }))
 }
 
+
+// Handles aborting a launch that exist on the MongoDB Database
 function abortLaunchById(launchId){
     const aborted = launches.get(launchId)
     aborted.upcoming = true
     aborted.success = false
     return aborted
+}
+
+
+// Handles the creation of new launch on the MongoDB Database
+async function saveLaunch(launch) {
+    const planet = planets.findOne({
+        keplerName: launch.target,
+    })
+
+    if(!planet) {
+        throw new Error('No matching planet was found')
+    }
+
+    await launches.updateOne({
+        flightNumber: launch.flightNumber 
+    }, launch, {
+        upsert: true
+    })
 }
 
 module.exports = {
