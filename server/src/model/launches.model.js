@@ -47,7 +47,9 @@ async function getAllLaunches(){
         .find({}, { '_id': 0, '__v': 0 })
 }
 
+
 // Handles the creation of a new launch on the MongoDB Database
+// also increment the number of flights to track the latest flight number
 async function scheduleNewLaunch(launch){
     const newFlightNumber = await getLatestFlightNumber() + 1
 
@@ -81,7 +83,7 @@ async function saveLaunch(launch) {
         throw new Error('No matching planet was found')
     }
 
-    await launches.updateOne({
+    await launches.findOneAndUpdate({
         flightNumber: launch.flightNumber 
     }, launch, {
         upsert: true
