@@ -49,7 +49,7 @@ async function httpAbortLaunch(req, res) {
     }
 
     return res.status(200).json({
-        OK: 'Everything is ok'
+        Ok: true
     })
 }
 
