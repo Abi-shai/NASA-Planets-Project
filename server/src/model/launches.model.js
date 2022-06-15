@@ -1,3 +1,5 @@
+const axios = require('axios')
+
 const launches = require('./launches.mongo')
 const planets = require('./planets.mongo')
 
@@ -19,6 +21,32 @@ const launch = {
 
 // Handles saving a launch to a MongoDB Database
 saveLaunch(launch)
+
+
+async function loadLaunchesData() {
+    const SPACEX_URL = 'https://api.spacexdata.com/v4/launches/query'
+
+    console.log('Loading the launches data')
+    const response = await axios.post(SPACEX_URL, {
+        query: {},
+        options: {
+            populate: [
+                {
+                    path: "rocket",
+                    select: {
+                        name: 1
+                    }
+                },
+                {
+                    path: 'payloads',
+                    select: {
+                        'customers': 1
+                    }
+                }
+            ]
+        }
+    })
+}
 
 
 async function existLaunchWithId(launchId){
@@ -103,5 +131,6 @@ module.exports = {
     getAllLaunches,
     scheduleNewLaunch,
     existLaunchWithId,
-    abortLaunchById
+    abortLaunchById,
+    loadLaunchesData
 }
