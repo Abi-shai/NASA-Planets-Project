@@ -1,6 +1,7 @@
 const axios = require('axios')
 
 const launches = require('./launches.mongo')
+const { populate } = require('./planets.mongo')
 const planets = require('./planets.mongo')
 
 const DEFAULT_FLIGHT_NUMBER = 100
@@ -22,14 +23,14 @@ const launch = {
 // Handles saving a launch to a MongoDB Database
 saveLaunch(launch)
 
+const SPACEX_URL = 'https://api.spacexdata.com/v4/launches/query'
 
-async function loadLaunchesData() {
-    const SPACEX_URL = 'https://api.spacexdata.com/v4/launches/query'
-
+async function populateLaunches() {
     console.log('Loading the launches data')
     const response = await axios.post(SPACEX_URL, {
         query: {},
         options: {
+            pagination: false,
             populate: [
                 {
                     path: "rocket",
@@ -46,11 +47,53 @@ async function loadLaunchesData() {
             ]
         }
     })
+
+    const launchDocs = response.data.docs
+
+    for (const launchDoc of launchDocs) {
+        const payloads = launchDoc['payloads']
+        const customers = payloads.flatMap((payload) => {
+            return payload['customers']
+        })
+
+        const launch = {
+            flightNumber: launchDoc.flight_number,
+            mission: launchDoc['name'],
+            rocket: launchDoc['rocket']['name'],
+            launchData: launchDoc['data_local'],
+            upcoming: launchDoc['upcoming'],
+            succes: launchDoc['success'],
+            customers
+        }
+
+        console.log(`${launch.flightNumber} ${launch.mission}`)
+    }
+}
+
+async function loadLaunchesData() {
+    const firstLaunch = await findLaunch({
+        flightNumber: 1,
+        rocket: 'Falcon 1',
+        mission: 'FalconSat'
+    })
+
+    if(firstLaunch){
+        console.log('LaunchData was already loaded')
+    } else {
+        await populateLaunches()
+    }
+
+    // Populate launches collection
+}
+
+
+async function findLaunch(filter) {
+    return await launches.findOne(filter)
 }
 
 
 async function existLaunchWithId(launchId){
-    return await launches.findOne({
+    return await findLaunch({
         flightNumber: launchId
     })
 }
