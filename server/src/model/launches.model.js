@@ -1,24 +1,9 @@
 const axios = require('axios')
 
 const launches = require('./launches.mongo')
-const { populate } = require('./planets.mongo')
 const planets = require('./planets.mongo')
 
 const DEFAULT_FLIGHT_NUMBER = 100
-
-let latestFlightNumber = 100
-
-// Base state of all the proporties that goes with Launches
-const launch = {
-    flightNumber: 100,
-    mission: 'Kepler Exploration X',
-    rocket: 'Explorer IS1',
-    launchData: new Date('December 27, 2030'),
-    target: 'Kepler-442 b',
-    customers: ['ZTM', 'NASA'],
-    upcoming: true,
-    success: true
-}
 
 // Handles saving a launch to a MongoDB Database
 saveLaunch(launch)
@@ -84,16 +69,7 @@ async function loadLaunchesData() {
         rocket: 'Falcon 1',
         mission: 'FalconSat'
     })
-
-    // if(firstLaunch){
-    //     console.log('LaunchData was already loaded')
-    // } else {
-    //     await populateLaunches()
-    // }
-
     await populateLaunches()
-
-    // Populate launches collection
 }
 
 
