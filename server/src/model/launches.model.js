@@ -126,9 +126,11 @@ async function getLatestFlightNumber(){
 }
 
 // Handles returning all the launches on the MongoDB Database
-async function getAllLaunches(){
+async function getAllLaunches(skip, limit){
     return await launches
         .find({}, { '_id': 0, '__v': 0 })
+        .skip(skip)
+        .limit(limit)
 }
 
 
