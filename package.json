@@ -8,7 +8,8 @@
     "client": "npm start --prefix client",
     "watch": "npm run server & npm run client",
     "deploy": "npm run build --prefix client && npm run server --prefix server",
-    "test": "npm test --prefix server"
+    "test": "npm test --prefix server",
+    "install-all": "npm install && npm install --prefix client && npm install --prefix server"
   },
   "keywords": [],
   "author": "",
