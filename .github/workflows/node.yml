@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 jobs:
   build:
-    runs-ons: ubuntu-latest
+    runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v2
       - name: Use Node.js version 16
